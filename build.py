@@ -15,13 +15,6 @@ print("Downloading latest release: " + latest_release["name"])
 def rm_if_exists(p: str):
     if path.exists(p): shutil.rmtree(p)
 
-rm_if_exists("font-patcher")
-fontpatcher_zip_data = requests \
-    .get("https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FontPatcher.zip") \
-    .content
-fontpatcher_zip = ZipFile(BytesIO(fontpatcher_zip_data))
-fontpatcher_zip.extractall("font-patcher")
-
 rm_if_exists("patched")
 os.mkdir("patched")
 
@@ -38,8 +31,7 @@ with ZipFile(BytesIO(iosevka_zip_data), mode="r") as iosevka_zip:
     for font in files:
         iosevka_zip.extract(font, "unpatched")
         subprocess.run(
-            ["fontforge",
-             "-script", "font-patcher/font-patcher",
+            ["nerd-font-patcher",
              f"unpatched/{font}",
              "-out", "patched"]
         )
