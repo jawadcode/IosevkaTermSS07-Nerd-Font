@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from io import BytesIO
 import os
 from os import path
+import platform
 import shutil
 import subprocess
 from zipfile import ZipFile
@@ -24,6 +25,8 @@ iosevka_zipfile_url = \
     f"https://github.com/be5invis/Iosevka/releases/download/{ver_name}/{iosevka_zipfile_name}"
 iosevka_zip_data = requests.get(iosevka_zipfile_url).content
 
+nerd_font_patcher = "nerd-font-patcher.cmd" if platform.system() == "Windows" else "nerd-font-patcher"
+
 with ZipFile(BytesIO(iosevka_zip_data), mode="r") as iosevka_zip:
     os.mkdir("unpatched")
     print("hi")
@@ -31,7 +34,7 @@ with ZipFile(BytesIO(iosevka_zip_data), mode="r") as iosevka_zip:
     for font in files:
         iosevka_zip.extract(font, "unpatched")
         subprocess.run(
-            ["nerd-font-patcher",
+            [nerd_font_patcher,
              f"unpatched/{font}",
              "-out", "patched"]
         )
